@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+monitor-service
+{% endblock %}
+
+{% block head_extra %}
+<style type="text/css">
+</style>
+{% endblock %}
+
+{% block main_tab %}
+    {% include 'i/monitor_tab.html' %}
+{% endblock %}
+
+{% block main_container %}
+
+<form action="" method="post">
+    {% for i in form %}
+    <div class="item">
+        {{ i.label_tag }}
+        {{ i }}
+        {{ i.errors }}
+    </div>
+    {% endfor %}
+
+    <input type="submit" value="Create" />
+</form>
+
+{% endblock %}

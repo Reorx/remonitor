@@ -1,0 +1,403 @@
+{% extends 'proj/base.html' %}
+
+{% load my_filters %}
+
+{% block head_title %}
+proj
+{% endblock %}
+
+{% block head_extra %}
+<style type="text/css">
+    #task_input, #task_input_head {
+        border-left: 0 !important;
+        border-right: 0 !important;
+    }
+    #task_input {
+        width: 780px;
+        height: 130px;
+        padding: 5px;
+        border-top: 0 !important;
+        border-bottom: 1px solid #7bc30a !important;
+        margin-top: 0px;
+        font-size: 15px;
+        color: #333;
+        background: url('/static/img/bg_input.png');
+        -webkit-background-size: auto 141px;
+    }
+    #task_input:focus {
+        outline: none;
+        background: #fff;
+    }
+    #task_input_head {
+        width: 790px;
+        height: 35px;
+        margin-top: 10px;
+        background: #7bc30a;
+    }
+    #task_input_head li {
+        float: left;
+        margin: 0 10px;
+        position: relative;
+    }
+    #task_input_head li a {
+        display: inline-block;
+        height: 35px;
+        line-height: 35px;
+        padding: 0 10px;
+        color: #fff;
+        font-size: 13px;
+        font-weight: bold;
+    }
+    #task_input_head li a:hover {
+        background: #9ED14F;
+    }
+
+    ul.selector {
+        display: none;
+        position: absolute;
+    }
+    ul.selector li {
+        height: 25px;
+        line-height: 25px;
+        cursor: pointer;
+    }
+    ul.selector li:hover {
+        text-decoration: underline;
+    }
+
+    #task_input_head li ul {
+        top: 35px;
+        width: 96px; height: 50px;
+        border: 1px solid #7bc30a;
+        border-top: 0;
+    }
+
+    #tasks_n_notes {
+        border-top: 1px solid #7bc30a !important;
+        margin-top: 10px;
+    }
+    #tasks_n_notes .gap{
+        height: 30px;
+    }
+    #tasks_n_notes .title {
+        height: 30px; line-height: 30px;
+        background: #7bc30a;
+        text-align: center;
+        font-size: 18px;
+        color: #fff;
+    }
+    #tasks_n_notes .item {
+        min-height: 50px;
+        border-bottom: 1px solid #7bc30a !important;
+    }
+    #tasks_n_notes .item .info {
+        float: left;
+        height: 50px;
+        width: 47px;
+        padding-left: 3px;
+    }
+    #tasks_n_notes .item .info span {
+        display: block;
+    }
+    #tasks_n_notes .item .info span:first-child {
+        height: 30px;
+        font-size: 25px;
+        color: #777;
+        font-weight: bold;
+    }
+    #tasks_n_notes .item .info span:last-child {
+        height: 15px;
+        font-size: 12px;
+        color: #888;
+    }
+    #tasks_n_notes .item .content {
+        float: left;
+        min-height: 47px;
+        line-height: 47px;
+        width: 290px;
+        padding-top: 3px;
+        color: #444;
+        font-size: 15px;
+    }
+
+    #tasks {
+        float: left;
+        width: 394px;
+        border-right: 1px solid #7bc30a !important;
+        min-height: 200px;
+    }
+    #tasks .title {
+        width: 394px;
+        border-right: 1px solid #fff !important;
+        position: relative;
+    }
+    #tasks_filter_wrapper {
+        position: absolute;
+        width: 50px; height: 30px;
+        right: 0; top: 0;
+    }
+    #tasks_filter_wrapper ul {
+        border-left: 1px solid #7bc30a;
+        border-bottom: 1px solid #7bc30a;
+    }
+
+    #tasks_filter {
+        display: block;
+        width: 50px; height: 30px;
+        color: #fff;
+        cursor: pointer;
+        font-size: 12px; letter-spacing: 1px; font-weight: bold;
+    }
+    #tasks_filter:hover {
+        background: #9ED14F;
+    }
+    #tasks_filter_selector {
+        width: 49px;
+    }
+
+    #notes {
+        float: left;
+        width: 395px;
+        min-height: 300px;
+    }
+
+    #notes .title {
+        width: 395px;
+    }
+</style>
+
+<script type="text/javascript">
+    $(function () {
+        // task input submit
+        $('#task_input').keydown(function (e) {
+            if (e.ctrlKey && e.keyCode == 13) {
+            // Ctrl-Enter pressed
+                var ajax = new_ajax();
+                ajax.url = '/proj/tasks/ajax/create';
+                ajax.data.content = $(this).val();
+                ajax.data.proj_id = $('#proj_selector_trigger').attr('nmval');
+                ajax.send(function (resp) {
+                    popNoti(resp);
+                    $('#task_input').val('').blur();
+                });
+            }
+        });
+
+        /* dynamic switchers ? */
+        /*
+         * function (callbefore, callafter) {
+         *    callbefore;
+         *    *main*
+         *    callafter;
+         * }
+        */
+        // proj
+        $('#proj_selector_trigger').click(function () {
+            var ajax = new_ajax();
+            ajax.url = '/proj/projects/ajax?is_creator=0';
+            ajax.method = 'GET';
+            ajax.send(function (json) {
+                var proj_selector = $('#proj_selector');
+                var current_id = $('#proj_selector_trigger').attr('nmval');
+                proj_selector.empty(
+                ).width($('#proj_selector_trigger').parent().width()-1
+                ).show();
+                /*
+                if (json.id != current_id) {
+                }
+                */
+                $.each(json, function (i, obj) {
+                    if (obj.id != current_id) {
+                    var proj_dom = $('<li>').html(obj.name
+                        ).addClass('fui-tiny_clearly'
+                        ).attr('nmval',obj.id
+                        );
+                        proj_selector.append(proj_dom);
+                    }
+                });
+            });
+            return false;
+        });
+
+        $('#proj_selector').find('li').live('click', function () {
+            //alert($(this).html());
+            var t = $('#proj_selector_trigger');
+            t.html($(this).html());
+            t.attr('nmval', $(this).attr('nmval'));
+            $(this).parent().hide();
+        });
+
+        /* static switchers */
+        // selector_triggers
+        $('.selector_trigger.static').click(function () {
+            //alert('x');
+            //$('#tasks_filter_selector').show();
+            //$('.selector.static').show();
+            $(this).next().width($(this).parent().width()).show();
+        });
+
+        var SelectorTriggerCallback = function (obj) {
+            obj.parent().hide();
+        }
+
+        // task reload function
+        var ReloadTasks = function (json) {
+            var tasks_container = $('#tasks').find('.items');
+            tasks_container.empty();
+            //var task_node = $('<>')
+            var task_tmpl = '<div class="item"> <div class="info"> <span>#${id}</span> <span>${time_delta}</span> </div> <div class="content"> ${content} </div> <div class="clearfix"></div> </div>';
+            $.each(json, function (i, obj) {
+                $.tmpl(task_tmpl, obj).appendTo(tasks_container);
+            });
+        };
+        $('#sendtype_switcher').next().find('li').click(function () {
+            alert('ss');
+        });
+
+        // task filter selector
+        $('#tasks_filter_selector').find('li').live('click', function () {
+            var ajax = new_ajax();
+            ajax.method = 'GET';
+            ajax.url = '/proj/tasks/ajax?proj_id='
+            + $('#current_context').attr('nmval')
+            + '&mode=' + $(this).attr('nmval');
+            ajax.send(function (json) {
+                ReloadTasks(json);
+            });
+
+            // generate now_filter from pre_filter
+            var pre_filter = $('#tasks_filter');
+            var now_filter = $('<li>').addClass('fui-tiny_clearly'
+            ).html(pre_filter.html()).attr('nmval', pre_filter.attr('nmval'));
+            // add after clicked
+            $(this).after(now_filter);
+            // change pre_filter display
+            pre_filter.html($(this).html()).attr('nmval', $(this).attr('nmval'));
+            // remove clicked node
+            $(this).remove();
+            // hide parent
+            $('#tasks_filter_selector').hide();
+        });
+
+    });
+</script>
+{% endblock %}
+
+{% block main_left %}
+    <ul id="task_input_head">
+        <li>
+            <a href="#" id="proj_selector_trigger" class="selector_trigger" nmval="{{ context.id }}" >{{ context.name }}</a>
+            <ul id="proj_selector" class="selector">
+            </ul>
+        </li>
+        <li>
+            <a href="#" id="sendtype_switcher" nmval="" class="selector_trigger static">task</a>
+            <ul id="" class="selector static">
+                <li class="fui-tiny_clearly" nmval="">note</li>
+                <li class="fui-tiny_clearly" nmval="">message</li>
+            </ul>
+        </li>
+    </ul>
+    <textarea id="task_input" class="" name="" rows="" cols=""></textarea>
+
+    <div id="tasks_n_notes">
+        <div id="tasks">
+            <div class="title">
+                Tasks
+                <div id="tasks_filter_wrapper">
+                    <a id="tasks_filter" nmval="0" class="selector_trigger static">all</a>
+                    <ul id="tasks_filter_selector" class="selector static">
+                        <li class="fui-tiny_clearly" nmval="1">my</li>
+                        <li class="fui-tiny_clearly" nmval="2">others</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="items">
+            {% for i in tasks %}
+            <div class="item">
+                <div class="info">
+                    <span>#{{ i.id }}</span>
+                    <span>{{ i.created_time|compare_by_now }}</span>
+                </div>
+                <div class="content">
+                    {{ i.content }}
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            {% endfor %}
+            </div>
+
+            <div class="gap"></div>
+        </div>
+        <div id="notes">
+            <div class="title">
+                Notes
+            </div>
+        </div>
+
+        <div class="clearfix"></div>
+    </div>
+{% endblock %}
+
+{% block main_right %}
+    <div class="block">
+        <div class="title_wrap">
+        <div class="title">
+            User
+        </div>
+        </div>
+        <div class="item">
+            {{ request.user.username }}
+        </div>
+        <div class="title">
+            Context
+        </div>
+        <div class="item" id="current_context" nmval="{{ context.id }}">
+            {{ context.name }}
+        </div>
+        <div class="title">
+            Projects
+        </div>
+    </div>
+    <div class="block">
+        <div class="title">
+            Tasks
+        </div>
+        <div class="item">
+            undone
+        </div>
+        <div class="item">
+            done
+        </div>
+    </div>
+    <div class="block">
+        <div class="title">
+            Daysums
+        </div>
+        <div class="item">
+            weekly
+        </div>
+        <div class="item">
+            periodly
+        </div>
+    </div>
+    <div class="block">
+        <div class="title">
+            Messages
+        </div>
+        <div class="item">
+            received
+        </div>
+        <div class="item">
+            sent
+        </div>
+    </div>
+    <div class="block">
+        <div class="title">
+            Settings
+        </div>
+        <div class="item">
+            default_context
+        </div>
+    </div>
+{% endblock %}

@@ -1,0 +1,115 @@
+{% extends 'monitor_base.html' %}
+
+{% block head_title %}
+dbe-explorer
+{% endblock %}
+
+{% block head_extra %}
+<style type="text/css">
+    div.mx textarea,
+    div.mx pre{
+        padding: 5px;
+        width: 844px;
+    }
+    div.mx pre{
+        background: #efefef;
+    }
+    .q_row, .q_head {
+        width: 854px;
+    }
+    #q_head {
+        border: 1px solid #bbb;
+        border-bottom: 0;
+    }
+    .q_row {
+        border-left: 1px solid #bbb;
+        border-right: 1px solid #bbb;
+    }
+    .q_row:first-child {
+        border-top: 1px solid #bbb;
+    }
+    .q_row:last-child {
+        border-bottom: 1px solid #bbb;
+    }
+    .q_row .item {
+        display: inline-block;
+        padding: 3px 8px;
+        margin-right: 2px;
+    }
+
+    #q_head {
+        background: #555;
+    }
+    #q_head .item {
+        color: #eee;
+    }
+
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#q_exp').bind('keyup', function (e) {
+            if (e.keyCode == 13) {
+                var ajax = new_ajax();
+                var exp = $(this).val();
+                ajax.url = '/dbe/explorer/ajax/exec';
+                ajax.data = {}
+                ajax.data.exp = exp;
+                ajax.send(function (obj) {
+                    // ui-1
+                    var qHead = $('#q_head');
+                    qHead.empty();
+                    var qRows = $('#q_rows');
+                    qRows.empty();
+                    for (var i in obj.q_head) {
+                        var iDOM = $('<div>').addClass('item').html(obj.q_head[i]);
+                        qHead.append(iDOM);
+                    }
+                    for (var i in obj.q_rows) {
+                        var rowDOM = $('<div>').addClass('q_row')
+                        for (var j in obj.q_rows[i]) {
+                            var iDOM = $('<div>').addClass('item').html(obj.q_rows[i][j]);
+                            rowDOM.append(iDOM);
+                        }
+                        qRows.append(rowDOM);
+                    }
+                });
+                // ui-2
+                $(this).val('').blur();
+                $('#q_exp_sent').html(exp);
+                prettyPrint();
+            }
+        });
+    });
+
+</script>
+{% endblock %}
+
+{% block main_container %}
+
+<textarea id="q_exp" class="prettyprint" name="" ></textarea>
+
+<pre id="q_exp_sent" class="prettyprint" ></pre>
+
+<div id="q_result" >
+    <div id="q_head" class="q_row">
+        {% for i in q_head %}
+        <div class="item">
+            {{ i }}
+        </div>
+        {% endfor %}
+    </div>
+
+    <div id="q_rows">
+    {% for row in q_rows %}
+    <div class="q_row">
+        {% for i in row %}
+        <div class="item">
+            {{ i }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

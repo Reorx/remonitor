@@ -1,0 +1,135 @@
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+
+    <title>
+    {% block head_title %}
+    {% endblock %}
+    </title>
+
+    <link media="all" rel="stylesheet" href="/static/css/prettify.css" type="text/css" />
+    <script src="/static/js/prettify.js" type="text/javascript"></script>
+
+    <link media="all" rel="stylesheet" href="/static/css/mx.css" type="text/css" />
+    <script src="/static/js/jquery.js" type="text/javascript"></script>
+
+    <style type="text/css">
+
+        #main {
+        }
+        #main_tab {
+            height: 51px;
+        }
+        #main_tab .tab {
+            float: left;
+            width: 200px; height: 50px; line-height: 50px;
+            margin-left: 20px;
+            border: 1px solid #888;
+            border-bottom: 0;
+            background: #fff;
+            z-index: 9;
+            text-align: center;
+            font-size: 25px;
+            letter-spacing: 1px;
+        }
+        #main_tab .focus {
+            height: 51px;
+        }
+        #main_container {
+            z-index: 1;
+            padding: 20px;
+        }
+
+    </style>
+    <script type="text/javascript">
+        var popNoti = function (s) {
+            var notiDOM = $('<div>').css({
+                'display': 'none',
+                'position': 'absolute',
+                'height': '30px', 'line-height': '30px',
+                'text-align': 'center',
+                'top': '20px', 'right': '20px',
+            }).append(
+                $('<span>').html(s).css({
+                    'padding': '2px 8px',
+                    'background': 'red', 'color': '#fff'
+                })
+            );
+            $('body').append(notiDOM);
+            notiDOM.fadeIn(1200, function () {
+                setTimeout(function () {
+                    notiDOM.fadeOut(1200, function () {
+                        notiDOM.remove();
+                    })
+                }, 800);
+            });
+        }
+
+        var new_ajax = function () {
+            var ajaxObj = {};
+            ajaxObj.method = 'POST';
+            ajaxObj.url = '';
+            ajaxObj.data = {};
+            ajaxObj.send = function (succFn) {
+                $.ajax({
+                    type: ajaxObj.method,
+                    url: ajaxObj.url,
+                    /*
+                    headers: {
+                        'Cookie': 'global_session_id='
+                    },
+                    beforeSend: function(jqXHR) {
+                        var header_cookie_val = 'global_session_id='+api_token;
+                        jqXHR.setRequestHeader("Cookie", header_cookie_val);
+                    },
+                    */
+                    data: ajaxObj.data,
+                    success: succFn
+                });
+            };
+            return ajaxObj;
+        }
+        
+        $(function () {
+            $('#main_tab .tab').each(function () {
+                var xfocus = '{{ main_tab }}';
+                if (xfocus == $(this).attr('xid')) {
+                    $(this).addClass('focus');
+                }
+            });
+            /*
+            $('h1.mx').mouseover(function () {
+                $(this).find('a.hidden').delay(300).css({'display': 'block'});
+            }).mouseleave(function () {
+                $(this).find('a.hidden').hide(300);
+            });
+            */
+        });
+
+    </script>
+
+    {% block head_extra %}
+    {% endblock %}
+</head>
+
+<body onload="prettyPrint()">
+
+    {% include 'i/base_lnav.html' %}
+
+    <div id="main" class="mx">
+
+        <div id="main_tab" class="co-0">
+            {% block main_tab %}
+            {% endblock %}
+        </div>
+
+        <div id="main_container">
+            {% block main_container %}
+            {% endblock %}
+        </div>
+
+    </div>
+
+</body>
+</html>

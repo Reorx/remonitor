@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+monitor-sysinfo
+{% endblock %}
+
+{% block head_extra %}
+{% endblock %}
+
+{% block main_tab %}
+    {% include 'i/monitor_tab.html' %}
+{% endblock %}
+
+{% block main_container %}
+    <div id="meminfo" class="" >
+        {% for attr, kb, mb in meminfo %}
+        <div class="item font-0" >
+            <span>
+            {{ attr }}
+            </span>
+            <span>
+            {{ mb }} MB
+            </span>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <div id="cpuinfo">
+        <div class="total">
+        </div>
+    </div>
+{% endblock %}

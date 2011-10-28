@@ -1,0 +1,36 @@
+{% extends 'proj/base.html' %}
+
+{% block head_title %}
+proj
+{% endblock %}
+
+{% block head_extra %}
+{% endblock %}
+
+{% block main_left %}
+    <form action="" method="post">
+        {{ form.name }}
+        {{ form.description }}
+        <input type="submit" value="Submit" />
+    </form>
+{% endblock %}
+
+{% block main_right %}
+    <div class="block">
+        <div class="title">
+            User
+        </div>
+        <div class="item">
+            {{ request.user.username }}
+        </div>
+        <div class="title">
+            Context
+        </div>
+        <div class="item">
+            projA
+        </div>
+        <div class="title">
+            Projects
+        </div>
+    </div>
+{% endblock %}

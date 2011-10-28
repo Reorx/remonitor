@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+monitor-process
+{% endblock %}
+
+{% block head_extra %}
+{% endblock %}
+
+{% block main_tab %}
+    {% include 'i/monitor_tab.html' %}
+{% endblock %}
+
+{% block main_container %}
+
+{% for i in processes %}
+<div class="process">
+    <div class="name">
+        {{ i.name }}
+    </div>
+</div>
+{% endfor %}
+
+<a class="create_button" href="/monitor/processes/create">
+    Create
+</a>
+
+
+{% endblock %}

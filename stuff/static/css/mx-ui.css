@@ -1,0 +1,131 @@
+body {
+    background: url('/static/img/bg1.png');
+    /*-webkit-transition: background-position 1s ease, color 1s ease;*/
+}
+a { text-decoration: none; }
+ul { display: block; margin: 0; padding: 0; list-style: none; }
+li { display: block; margin: 0; padding: 0; list-style: none; }
+
+ul.mx {
+    position: fixed;
+    left: 0; top: 80px;
+    height: 300px;
+}
+ul.mx li {
+    width: 100px; height: 50px;
+    position: relative;
+    margin-top: 10px;
+    padding-right: 5px;
+    border: 1px solid transparent;
+    border-left: 0;
+    z-index: 9999;
+
+    -webkit-border-radius: 0 8px 8px 0;
+    -webkit-box-shadow: 0 0 8px #aaa;
+    -webkit-transition: all 0.3s ease-in-out;
+}
+ul.mx li.seq0 { left: 0; }
+ul.mx li.seq1 { left: -120px; }
+ul.mx li.seq2 { left: -170px; }
+ul.mx li.seq3 { left: -220px; }
+ul.mx:hover > li.hidden { left: 0; }
+
+ul.mx a {
+    display: block;
+    width: 90px; height: 30px; line-height: 30px;
+    margin: 8px 0 0 6px;
+    font-size: 18px;
+    letter-spacing: 1.5px;
+    text-align: center;
+    color: #222;
+    border: 1px solid transparent;
+
+    text-shadow: 1px 1px 1px #fff;
+    -webkit-border-radius: 23px;
+    -webkit-transition: all 0.3s ease-in-out;
+}
+ul.mx a:hover {
+    border: 1px solid #888;
+    -webkit-box-shadow: 0 0 5px #999 inset;
+}
+
+div.mx {
+    max-width: 950px;
+    margin: 0 auto;
+    margin-top: 50px;
+    border 1px solid #aaa;
+    -webkit-box-shadow: 0 0 5px #888;
+    background: #fafafa;
+}
+div.mx:first-child {
+    margin-top: 100px;
+}
+
+div.mx input,
+div.mx textarea {
+    border: 1px solid #aaa;
+    display: block;
+}
+div.mx input[type="submit"] {
+    margin: 10px auto;
+    margin-top: 20px;
+    width: 150px; height: 30px;
+    font-size: 18px;
+    color: #555;
+    -webkit-border-radius: 5px;
+    border: 2px solid #999;
+}
+div.mx textarea {
+    min-width: 300px; min-height: 45px;
+    resize: none;
+}
+div.mx pre {
+    margin: 10px 0;
+    min-height: 45px;
+}
+
+div.mx .font-0 {
+    font-size: 12px;
+    font-weight: normal;
+    font-family: "Courier New", Courier, monaco, Palatino, sans-serif;
+    color: #0a0a0a;
+}
+
+.create_button {
+    display: block;
+    width: 200px; height: 30px; line-height: 30px;
+    margin: 0 auto;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    cursor: pointer;
+    background: #f5f5f5;
+    text-align: center;
+}
+
+.clearfix {
+    clear: both;
+}
+
+/* colors */
+/* monitor */
+div.co-0 *,
+li.co-0 * {
+    color: #0388CD !important;
+}
+/* dbe */
+.co-1 {
+}
+/* proj */
+.co-2 {
+    border: 1px solid #7bc30a !important;
+}
+/* graph */
+.co-3 {
+}
+
+/* font ui */
+.fui-tiny_clearly {
+    color: #555;
+    font-size: 12px;
+    text-align: center;
+}

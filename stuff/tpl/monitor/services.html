@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+monitor-service
+{% endblock %}
+
+{% block head_extra %}
+<style type="text/css">
+    #service_action {
+        height: 35px;
+        margin: 15px;
+        border: 1px solid #aaa;
+        background: #f5f5f5;
+    }
+    #service_action a {
+        display: inline-block;
+        margin: 5px 10px 0 10px;
+        padding: 5px;
+    }
+</style>
+{% endblock %}
+
+{% block main_tab %}
+    {% include 'i/monitor_tab.html' %}
+{% endblock %}
+
+{% block main_container %}
+
+{% for i in services %}
+<div class="service">
+    <div class="name">
+        {{ i.name }}
+    </div>
+</div>
+{% endfor %}
+
+<a class="create_button" href="/monitor/services/create">
+    Create
+</a>
+
+{% endblock %}

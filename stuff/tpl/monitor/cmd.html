@@ -1,0 +1,74 @@
+{% extends 'base.html' %}
+
+{% block head_title %}
+monitor-dukeshell
+{% endblock %}
+
+{% block head_extra %}
+
+<style type="text/css">
+    #shell_input {
+    }
+    #shell_input input[type="text"],
+    #shell_input input[type="button"]{
+        display: inline-block;
+        height: 25px;
+    }
+    #shell_input input[type="text"] {
+        width: 500px;
+    }
+    #shell_input input[type="button"]{
+    }
+    #shell_output {
+        min-height: 200px;
+        margin-top: 20px;
+        padding-left: 10px;
+        border: 1px solid #aaa;
+        background: #333;
+        color: #eee;
+    }
+    .prettyprint {
+        border: 0 !important;
+    }
+</style>
+<script type="text/javascript">
+    $(function () {
+        $('#shell_input').bind('keyup', function (e) {
+            if (e.keyCode == 13) {
+                var postData = {};
+                postData.cmd = $('#shell_input').find('input[type="text"]').val();
+                //alert(cmd);
+                $.ajax({
+                    type: 'POST',
+                    url: '/monitor/cmd/ajax/exec',
+                    data: postData,
+                    success: function (body) {
+                        $('#shell_output').find('pre').html(body);
+                        $('#create_button').show();
+                    },
+                    error: function (jqxhr, ermsg, er) {
+                        popNoti(jqxhr.status + ': ' + ermsg);
+                        $('#create_button').hide();
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}
+
+{% block main_tab %}
+    {% include 'i/monitor_tab.html' %}
+{% endblock %}
+
+{% block main_container %}
+<div id="shell_input">
+    <input type="text" />
+    <input id="create_button" type="button" value="create" style="display: none;" />
+</div>
+<div id="shell_output">
+    <pre class="prettyprint">
+    </pre>
+</div>
+
+{% endblock %}

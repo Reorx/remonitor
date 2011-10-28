@@ -1,0 +1,23 @@
+{% extends 'monitor_base.html' %}
+
+{% block head_title %}
+dbe-dbviews
+{% endblock %}
+
+{% block head_extra %}
+<style type="text/css">
+
+</style>
+{% endblock %}
+
+{% block main_container %}
+
+<div class="nav">
+{% for i in services %}
+    <div class="tab">
+        {{ i.name }}
+    </div>
+{% endfor %}
+</div>
+
+{% endblock %}
